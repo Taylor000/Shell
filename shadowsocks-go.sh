@@ -157,7 +157,7 @@ pre_install(){
     fi
     # Set shadowsocks-go config password
     # echo "Please enter password for shadowsocks-go:"
-    read -p "(Default password: sobaigu.com):" shadowsockspwd | `hostname`
+    shadowsockspwd=`hostname`
     # read -p "(Default password: sobaigu.com):" shadowsockspwd
     # [ -z "${shadowsockspwd}" ] && shadowsockspwd="sobaigu.com"
     echo
@@ -169,7 +169,7 @@ pre_install(){
     while true
     do
     echo -e "Please enter a port for shadowsocks-go [1-65535]:"
-    read -p "(Default port: 8989):" shadowsocksport | 8989
+    shadowsocksport='8989'
     # read -p "(Default port: 8989):" shadowsocksport
     # [ -z "${shadowsocksport}" ] && shadowsocksport="8989"
     expr ${shadowsocksport} + 1 &>/dev/null
@@ -194,7 +194,7 @@ pre_install(){
         hint="${ciphers[$i-1]}"
         echo -e "${green}${i}${plain}) ${hint}"
     done
-    read -p "Which cipher you'd select(Default: ${ciphers[0]}):" pick | 1
+    pick='1'
     # read -p "Which cipher you'd select(Default: ${ciphers[0]}):" pick
     # [ -z "$pick" ] && pick=1
     expr ${pick} + 1 &>/dev/null
