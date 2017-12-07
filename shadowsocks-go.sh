@@ -351,7 +351,7 @@ install(){
     echo -e "Your Password         : \033[41;37m ${shadowsockspwd} \033[0m"
     echo -e "Your Encryption Method: \033[41;37m ${shadowsockscipher} \033[0m"
     echo
-    echo "Welcome to visit: sobaigu.com/shadowsocks-faq.html"
+    echo "Welcome to visit: http://sobaigu.com/shadowsocks-faq.html"
     echo "Enjoy it!"
     echo
 }
