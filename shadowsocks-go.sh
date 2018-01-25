@@ -260,17 +260,18 @@ download_files(){
     if check_sys packageManager yum; then
         if ! wget --no-check-certificate -O /etc/init.d/shadowsocks https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-go; then
             echo -e "[${red}Error${plain}] Failed to download shadowsocks-go auto start script!"
-			sed -i '/^    $BIN -c $CONF/c\    $BIN -c $CONF -u 2>&1 > /dev/null &' /etc/init.d/shadowsocks
             exit 1
         fi
     elif check_sys packageManager apt; then
         if ! wget --no-check-certificate -O /etc/init.d/shadowsocks https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-go-debian; then
             echo -e "[${red}Error${plain}] Failed to download shadowsocks-go auto start script!"
-			sed -i '/^    $BIN -c $CONF/c\    $BIN -c $CONF -u 2>&1 > /dev/null &' /etc/init.d/shadowsocks
             exit 1
         fi
     fi
 }
+
+# enable udp
+sed -i 's/$BIN -c $CONF/$BIN -c $CONF -u/g' /etc/init.d/shadowsocks
 
 # Config shadowsocks
 config_shadowsocks(){
