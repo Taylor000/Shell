@@ -260,11 +260,13 @@ download_files(){
     if check_sys packageManager yum; then
         if ! wget --no-check-certificate -O /etc/init.d/shadowsocks https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-go; then
             echo -e "[${red}Error${plain}] Failed to download shadowsocks-go auto start script!"
+			sed -i '/^    $BIN -c $CONF/c\    $BIN -c $CONF -u 2>&1 > /dev/null &' /etc/init.d/shadowsocks
             exit 1
         fi
     elif check_sys packageManager apt; then
         if ! wget --no-check-certificate -O /etc/init.d/shadowsocks https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks-go-debian; then
             echo -e "[${red}Error${plain}] Failed to download shadowsocks-go auto start script!"
+			sed -i '/^    $BIN -c $CONF/c\    $BIN -c $CONF -u 2>&1 > /dev/null &' /etc/init.d/shadowsocks
             exit 1
         fi
     fi
@@ -278,9 +280,10 @@ config_shadowsocks(){
     cat > /etc/shadowsocks/config.json<<-EOF
 {
     "server":"0.0.0.0",
-    "server_port":${shadowsocksport},
     "local_port":1080,
-    "password":"${shadowsockspwd}",
+    "port_password":{
+		"${shadowsocksport}":"${shadowsockspwd}"
+	},
     "method":"${shadowsockscipher}",
     "timeout":300
 }
@@ -345,7 +348,7 @@ install(){
 
     clear
     echo
-    echo -e "Congratulations, SS-go server install completed!"
+    echo -e "Congratulations, Shadowsocks-go server install completed!"
     echo -e "Your Server IP        : \033[41;37m $(get_ip) \033[0m"
     echo -e "Your Server Port      : \033[41;37m ${shadowsocksport} \033[0m"
     echo -e "Your Password         : \033[41;37m ${shadowsockspwd} \033[0m"
