@@ -282,8 +282,8 @@ config_shadowsocks(){
     "server":"0.0.0.0",
     "local_port":1080,
     "port_password":{
-		"${shadowsocksport}":"${shadowsockspwd}"
-	},
+        "${shadowsocksport}":"${shadowsockspwd}"
+    },
     "method":"${shadowsockscipher}",
     "timeout":300
 }
