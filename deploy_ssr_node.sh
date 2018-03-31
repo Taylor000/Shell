@@ -26,6 +26,8 @@ install_ssr(){
 	sed -i -e "s/ssnode/$ssnode/g" usermysql.json
 	echo 'ssr配置完成'
 	chmod +x run.sh && ./run.sh
+	#开机自动运行
+	echo "/root/shadowsocksr/run.sh" >> /etc/rc.d/rc.local
 	cd /root/
 	echo 'ssr已开始运行'
 	
