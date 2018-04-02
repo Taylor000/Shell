@@ -27,6 +27,7 @@ install_ssr(){
 	echo 'ssr配置完成'
 	chmod +x run.sh && ./run.sh
 	#开机自动运行
+	sed -i '/*shadowsocksr/run.sh/d'  /etc/rc.d/rc.local
 	echo "/usr/shadowsocksr/run.sh" >> /etc/rc.d/rc.local
 	cd /usr/
 	echo 'ssr已开始运行'
