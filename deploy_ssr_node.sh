@@ -37,6 +37,7 @@ install_ssr(){
 	systemctl disable firewalld.service
 	chkconfig iptables off
 	echo '已关闭iptables、firewalld，如有需要请自行配置。'
+	rm -f ~/deploy_ssr_node.sh
 }
 
 open_bbr(){
@@ -45,6 +46,7 @@ open_bbr(){
 	wget --no-check-certificate -O bbr.sh https://github.com/teddysun/across/raw/master/bbr.sh
 	chmod +x bbr.sh
 	./bbr.sh
+	rm -f ~/deploy_ssr_node.sh ~/bbr.sh
 }
 
 auto_reboot(){
