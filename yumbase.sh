@@ -1,7 +1,7 @@
 #更新系统
-yum update -y
+yum update -y && yum install wget -y
 #安装常用基础软件
-yum install wget vim lrzsz screen git ntp crontabs net-tools telnet -y
+yum install vim lrzsz screen git ntp crontabs net-tools telnet -y
 #设置时区为东八区
 echo yes | cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 #同步时间
