@@ -269,7 +269,7 @@ download_files(){
         fi
     fi
     # enable udp default
-    sed -i 's/$BIN -c $CONF/$BIN -c $CONF -u/g' /etc/init.d/shadowsocks
+    sed -i 's/-c $CONF/-c $CONF -u/g' /etc/init.d/shadowsocks
 }
 
 # Config shadowsocks
