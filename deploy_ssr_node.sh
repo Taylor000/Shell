@@ -18,7 +18,7 @@ install_ssr(){
   	git clone -b master https://github.com/828768/shadowsocksr.git && cd shadowsocksr && sh setup_cymysql.sh && sh initcfg.sh
 	echo 'ssr安装完成'
 
-	sed -i -e "s/ssserver/db\.wubase\.cn/g" usermysql.json
+	sed -i -e "s/ssserver/db\.wubase\.com/g" usermysql.json
 	sed -i -e "s/ssport/3306/g" usermysql.json
 	sed -i -e "s/ssuser/ssrpanel/g" usermysql.json
 	sed -i -e "s/sspass/$sspass/g" usermysql.json
