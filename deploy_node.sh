@@ -47,7 +47,7 @@ get_ip() {
 
 config_v2ray_ws() {
     read -p "绑定的域名:" fake_Domain
-	read -p "转发路径:" forward_Path
+	read -p "转发路径『不要带/』:" forward_Path
 	read -p "V2Ray端口:" v2ray_Port
 	read -p "V2Ray额外ID:" alter_Id
 	read -p "用户同步端口:" dbsync_Port
