@@ -65,6 +65,7 @@ install_v2ray(){
 		wget --no-check-certificate -O config.json https://raw.githubusercontent.com/828768/Shell/master/resource/v2ray-config.json
 		sed -i -e "s/v2ray_Port/$v2ray_Port/g" config.json
 		sed -i -e "s/alter_Id/$alter_Id/g" config.json
+		sed -i -e "s/forward_Path/$forward_Path/g" config.json
 		sed -i -e "s/dbsync_Port/$dbsync_Port/g" config.json
 		sed -i -e "s/node_Id/$node_Id/g" config.json
 		sed -i -e "s/db_Host/$db_Host/g" config.json
@@ -129,9 +130,8 @@ install_caddy() {
 	# 修改配置
 	mkdir -p /etc/caddy/
 	if [[ $num == "1" ]]; then
-		wget --no-check-certificate -O config.json https://raw.githubusercontent.com/828768/Shell/master/resource/www.zip
-		unzip www.zip && rm -f www.zip
-		rm -rf /srv/www && mv -f www /srv/www
+		wget --no-check-certificate -O www.zip https://raw.githubusercontent.com/828768/Shell/master/resource/www.zip
+		unzip www.zip -d /srv/ && rm -f www.zip
 		wget --no-check-certificate -O Caddyfile https://raw.githubusercontent.com/828768/Shell/master/resource/Caddyfile
 		local user_Name=$(((RANDOM << 22)))
 		sed -i -e "s/fake_Domain/$fake_Domain/g" Caddyfile

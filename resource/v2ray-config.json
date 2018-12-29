@@ -14,7 +14,7 @@
   "inbounds": [
     {
     "listen": "127.0.0.1",
-     "port": dbsync_Port,
+    "port": dbsync_Port,
     "protocol": "dokodemo-door",
     "settings": {
       "address": "127.0.0.1"
