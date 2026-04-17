@@ -11,7 +11,7 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # 作者与脚本信息
-AUTHOR_GITHUB="https://github.com/Taylor000"
+AUTHOR_GITHUB="https://github.com/你的用户名"
 SHORTCUT_CMD="vps"
 
 # 默认全局配置
@@ -40,16 +40,19 @@ show_menu() {
     echo -e "${BLUE}     快捷启动命令: ${RED}${SHORTCUT_CMD}${NC}"
     echo -e "${BLUE}==================================================${NC}"
     echo -e "${YELLOW} 1.${NC} 显示系统基本信息与性能测试"
-    echo -e "${YELLOW} 2.${NC} 修改 SSH 服务端口 (当前默认: $DEFAULT_PORT)"
-    echo -e "${YELLOW} 3.${NC} 安装 BBR 加速插件 (秋水逸冰)"
-    echo -e "${YELLOW} 4.${NC} 安装 Debian 11 系统 (默认密码: $DEFAULT_PASS)"
-    echo -e "${YELLOW} 5.${NC} 安装 Windows 10 LTSC 系统 (默认密码: $DEFAULT_PASS)"
-    echo -e "${YELLOW} 6.${NC} 安装 aaPanel 面板 (AaronYES 破解版)"
-    echo -e "${YELLOW} 7.${NC} 安装 aaPanel 面板 (官方正式版)"
-    echo -e "${YELLOW} 8.${NC} 安装 Realm 端口转发工具"
-    echo -e "${YELLOW} 9.${NC} 安装 ServerStatus 监控探针 (默认端口: $DEFAULT_PORT)"
-    echo -e "${YELLOW} 10.${NC} 安装 Xray 代理服务 (233boy版)"
-    echo -e "${YELLOW} 11.${NC} 安装 XrayR 后端对接脚本"
+    echo -e "${YELLOW} 2.${NC} 修改系统 root 密码 (passwd)"
+    echo -e "${YELLOW} 3.${NC} 修改 SSH 服务端口 (默认修改为: $DEFAULT_PORT)"
+    echo -e "${YELLOW} 4.${NC} 安装 BBR 加速插件 (秋水逸冰)"
+    echo -e "${YELLOW} 5.${NC} 安装 Debian 11 系统 (默认密码: $DEFAULT_PASS)"
+    echo -e "${YELLOW} 6.${NC} 安装 Windows 10 LTSC 系统 (默认密码: $DEFAULT_PASS)"
+    echo -e "${YELLOW} 7.${NC} 安装 aaPanel 面板 (AaronYES 破解版)"
+    echo -e "${YELLOW} 8.${NC} 安装 aaPanel 面板 (官方正式版)"
+    echo -e "${YELLOW} 9.${NC} 安装 Realm 端口转发工具"
+    echo -e "${YELLOW} 10.${NC} 安装 ServerStatus 监控探针 (默认端口: $DEFAULT_PORT)"
+    echo -e "${YELLOW} 11.${NC} 安装 Xray 代理服务 (233boy版)"
+    echo -e "${YELLOW} 12.${NC} 安装 sing-box 代理服务 (233boy版)"
+    echo -e "${YELLOW} 13.${NC} 安装 XrayR 后端对接 (官方正式版)"
+    echo -e "${YELLOW} 14.${NC} 安装 XrayR 后端对接 (柚子版脚本)"
     echo -e "${BLUE}--------------------------------------------------${NC}"
     echo -e "${RED} 0.${NC} 退出脚本 (或连续两次回车退出)"
     echo -e "${BLUE}==================================================${NC}"
@@ -73,69 +76,88 @@ while true; do
             read -p "按回车键继续..."
             ;;
         2)
-            read -p "请输入 SSH 端口 (直接回车则不修改): " ssh_port
-            if [[ -n "$ssh_port" && "$ssh_port" =~ ^[0-9]+$ ]]; then
+            echo -e "${YELLOW}正在调用系统 passwd 命令，请输入新密码：${NC}"
+            passwd root
+            read -p "密码修改流程结束，按回车键继续..."
+            ;;
+        3)
+            read -p "请输入 SSH 端口 (回车默认: $DEFAULT_PORT): " ssh_port
+            ssh_port=${ssh_port:-$DEFAULT_PORT}
+            if [[ "$ssh_port" =~ ^[0-9]+$ ]]; then
                 sed -i "s/^#\?Port .*/Port $ssh_port/" /etc/ssh/sshd_config
                 if command -v ufw >/dev/null 2>&1; then ufw allow $ssh_port/tcp; fi
                 systemctl restart ssh
-                echo -e "${GREEN}端口已修改为 $ssh_port。后续请通过 ssh -p $ssh_port 连接。${NC}"
+                echo -e "${GREEN}端口已修改为 $ssh_port。后续连接请使用: ssh -p $ssh_port root@IP${NC}"
             else
-                echo -e "${YELLOW}操作取消。${NC}"
+                echo -e "${RED}输入无效，已取消操作。${NC}"
             fi
             read -p "按回车键继续..."
             ;;
-        3)
+        4)
             bash <(curl -Lso- https://github.com/teddysun/across/raw/master/bbr.sh)
             ;;
-        4)
-            read -p "请输入登录密码 (回车默认: $DEFAULT_PASS): " dd_pass
+        5)
+            read -p "请输入 DD 后的登录密码 (回车默认: $DEFAULT_PASS): " dd_pass
             dd_pass=${dd_pass:-$DEFAULT_PASS}
             echo -e "${RED}确认信息：系统 Debian 11 | 用户 root | 密码 $dd_pass${NC}"
-            echo -e "${YELLOW}系统将在 10 秒后开始安装，请及时保存密码信息...${NC}"
+            echo -e "${YELLOW}系统将在 10 秒后开始安装，请务必记录好密码...${NC}"
             sleep 10
             bash <(wget --no-check-certificate -qO- 'https://www.moeelf.com/attachment/LinuxShell/InstallNET.sh') -d 11 -v 64 -a -p "$dd_pass"
             ;;
-        5)
+        6)
             get_network_info
-            read -p "请输入登录密码 (回车默认: $DEFAULT_PASS): " win_pass
+            read -p "请输入 DD 后的登录密码 (回车默认: $DEFAULT_PASS): " win_pass
             win_pass=${win_pass:-$DEFAULT_PASS}
             echo -e "${RED}确认信息：系统 Win10 | 用户 Administrator | 密码 $win_pass${NC}"
-            echo -e "${YELLOW}系统将在 10 秒后开始安装，请及时保存密码信息...${NC}"
+            echo -e "${BLUE}网络参数：IP $LOCAL_IP | 网关 $LOCAL_GATEWAY${NC}"
+            echo -e "${YELLOW}系统将在 10 秒后开始安装，请务必记录好密码...${NC}"
             sleep 10
             wget -qO- inst.sh | bash -s - -n $LOCAL_IP,$LOCAL_MASK,$LOCAL_GATEWAY -p "$win_pass" -t https://dl.lamp.sh/vhd/zh-cn_windows10_ltsc.xz
             ;;
-        6)
+        7)
             wget https://raw.githubusercontent.com/AaronYES/aaPanel/main/script/aapanel.sh -O aapanel.sh && chmod +x aapanel.sh && ./aapanel.sh
             echo -e "${GREEN}安装完成！后续管理面板快捷命令为: ${RED}bt${NC}"
             read -p "按回车键继续..."
             ;;
-        7)
+        8)
             URL=https://www.aapanel.com/script/install_panel_en.sh
             if [ -f /usr/bin/curl ];then curl -ksSO $URL ;else wget --no-check-certificate -O install_panel_en.sh $URL;fi
             bash install_panel_en.sh ipssl
             echo -e "${GREEN}安装完成！后续管理面板快捷命令为: ${RED}bt${NC}"
             exit 0
             ;;
-        8)
+        9)
             wget https://raw.githubusercontent.com/jinqians/realm/refs/heads/main/realm.sh && chmod +x realm.sh && ./realm.sh
             echo -e "${GREEN}安装完成！后续管理快捷命令为: ${RED}./realm.sh${NC}"
             read -p "按回车键继续..."
             ;;
-        9)
+        10)
             read -p "请输入探针访问端口 (回车默认: $DEFAULT_PORT): " s_port
             s_port=${s_port:-$DEFAULT_PORT}
             wget --no-check-certificate -qO ~/serverstatus-config.json https://raw.githubusercontent.com/cppla/ServerStatus/master/server/config.json && mkdir -p ~/serverstatus-monthtraffic
             docker run -d --restart=always --name=status -v ~/serverstatus-config.json:/ServerStatus/server/config.json -v ~/serverstatus-monthtraffic:/usr/share/nginx/html/json -p $s_port:80 -p 35601:35601 cppla/serverstatus:1.1.5
             echo -e "${GREEN}探针安装完成！请访问 http://IP:$s_port ${NC}"
-            echo -e "${GREEN}后续管理命令: ${RED}docker ps / docker restart status${NC}"
             read -p "按回车键继续..."
             ;;
-        10)
+        11)
             bash <(wget -qO- -o- https://github.com/233boy/Xray/raw/main/install.sh)
             echo -e "${GREEN}安装完成！后续管理快捷命令为: ${RED}xray${NC}"
             read -p "按回车键继续..."
             ;;
-        11)
+        12)
+            echo -e "${GREEN}开始安装 sing-box 代理服务...${NC}"
+            bash <(wget -qO- -o- https://github.com/233boy/sing-box/raw/main/install.sh)
+            echo -e "${GREEN}安装完成！后续管理快捷命令为: ${RED}sb${NC}"
+            read -p "按回车键继续..."
+            ;;
+        13)
+            echo -e "${GREEN}开始安装 XrayR 官方版...${NC}"
+            bash <(curl -Ls https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/install.sh)
+            echo -e "${GREEN}安装完成！后续管理快捷命令为: ${RED}XrayR${NC}"
+            read -p "按回车键继续..."
+            ;;
+        14)
+            echo -e "${GREEN}开始安装 XrayR 柚子版...${NC}"
             wget -N https://raw.githubusercontent.com/youzi3/XrayR-script/main/install.sh && bash install.sh
             echo -e "${GREEN}安装完成！后续管理快捷命令为: ${RED}xrayr${NC}"
             read -p "按回车键继续..."
