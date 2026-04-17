@@ -11,7 +11,7 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # 作者与脚本信息
-AUTHOR_GITHUB="https://github.com/你的用户名"
+AUTHOR_GITHUB="https://github.com/Taylor000"
 SHORTCUT_CMD="vps"
 
 # 默认全局配置
