@@ -69,7 +69,7 @@ show_menu() {
     echo -e "${YELLOW} 4.${NC} 安装 BBR 加速插件 (秋水逸冰)"
     echo -e "${YELLOW} 5.${NC} 安装 Debian 11 系统"
     echo -e "${YELLOW} 6.${NC} 安装 Win10 LTSC 系统 (秋水逸冰)"
-    echo -e "${YELLOW} 7.${NC} 安装 Win10 系统 (veip007)"
+    echo -e "${YELLOW} 7.${NC} 安装 Win10 系统 (veip007版)"
     echo -e "${YELLOW} 8.${NC} 安装 aaPanel 面板 (AaronYES开心版)"
     echo -e "${YELLOW} 9.${NC} 安装 aaPanel 面板 (官方正式版)"
     echo -e "${YELLOW} 10.${NC} 安装 Docker 运行环境"
@@ -78,9 +78,9 @@ show_menu() {
     echo -e "${YELLOW} 13.${NC} 安装 Xray 代理服务 (233boy版)"
     echo -e "${YELLOW} 14.${NC} 安装 sing-box 代理服务 (233boy版)"
     echo -e "${YELLOW} 15.${NC} 安装 XrayR 后端对接 (官方正式版)"
-    echo -e "${YELLOW} 16.${NC} 安装 XrayR 后端对接 (柚子备份版)"
+    echo -e "${YELLOW} 16.${NC} 安装 XrayR 后端对接 (柚子版脚本)"
     echo -e "${BLUE}--------------------------------------------------${NC}"
-    echo -e "${RED} 0.${NC} 退出脚本（或者双击回车）${NC}"
+    echo -e "${RED} 0.${NC} 退出脚本${NC}"
     echo -e "${BLUE}==================================================${NC}"
 }
 
