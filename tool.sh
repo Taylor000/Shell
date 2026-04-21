@@ -82,18 +82,19 @@ show_menu() {
     echo -e "${YELLOW} 3.${NC} 修改 SSH 服务端口"
     echo -e "${YELLOW} 4.${NC} 安装 BBR 加速插件 (秋水逸冰)"
     echo -e "${YELLOW} 5.${NC} 安装 iperf3 网络测速工具"
-    echo -e "${YELLOW} 6.${NC} 安装 Debian 11 系统（萌咖）"
-    echo -e "${YELLOW} 7.${NC} 安装 Win10 LTSC 系统 (秋水逸冰)"
-    echo -e "${YELLOW} 8.${NC} 安装 Win10 系统 (veip007)"
-    echo -e "${YELLOW} 9.${NC} 安装 aaPanel 面板 (AaronYES开心版)"
-    echo -e "${YELLOW} 10.${NC} 安装 aaPanel 面板 (官方正式版)"
-    echo -e "${YELLOW} 11.${NC} 安装 Docker 运行环境"
-    echo -e "${YELLOW} 12.${NC} 安装 Realm 端口转发工具"
-    echo -e "${YELLOW} 13.${NC} 安装 ServerStatus 监控探针"
-    echo -e "${YELLOW} 14.${NC} 安装 Xray 代理服务 (233boy版)"
-    echo -e "${YELLOW} 15.${NC} 安装 sing-box 代理服务 (233boy版)"
-    echo -e "${YELLOW} 16.${NC} 安装 XrayR 后端对接 (官方正式版)"
-    echo -e "${YELLOW} 17.${NC} 安装 XrayR 后端对接 (柚子备份版)"
+    echo -e "${YELLOW} 6.${NC} 安装 Debian 11 系统 (萌咖)"
+    echo -e "${YELLOW} 7.${NC} 安装 Debian 12 系统 (萌咖)"
+    echo -e "${YELLOW} 8.${NC} 安装 Win10 LTSC 系统 (秋水逸冰)"
+    echo -e "${YELLOW} 9.${NC} 安装 Win10 系统 (veip007)"
+    echo -e "${YELLOW} 10.${NC} 安装 aaPanel 面板 (AaronYES开心版)"
+    echo -e "${YELLOW} 11.${NC} 安装 aaPanel 面板 (官方正式版)"
+    echo -e "${YELLOW} 12.${NC} 安装 Docker 运行环境"
+    echo -e "${YELLOW} 13.${NC} 安装 Realm 端口转发工具"
+    echo -e "${YELLOW} 14.${NC} 安装 ServerStatus 监控探针"
+    echo -e "${YELLOW} 15.${NC} 安装 Xray 代理服务 (233boy)"
+    echo -e "${YELLOW} 16.${NC} 安装 sing-box 代理服务 (233boy)"
+    echo -e "${YELLOW} 17.${NC} 安装 XrayR 后端对接 (官方正式版)"
+    echo -e "${YELLOW} 18.${NC} 安装 XrayR 后端对接 (柚子备份版)"
     echo -e "${BLUE}--------------------------------------------------${NC}"
     echo -e "${RED} 0.${NC} 退出脚本 (或双击回车)${NC}"
     echo -e "${BLUE}==================================================${NC}"
@@ -103,7 +104,6 @@ while true; do
     show_menu
     read -p "请输入对应数字进行操作: " choice
     
-    # 双击回车退出逻辑
     if [[ -z "$choice" ]]; then
         ((empty_count++))
         [[ $empty_count -ge 2 ]] && exit 0
@@ -134,27 +134,30 @@ while true; do
             if [ -f /usr/bin/apt ]; then apt update && apt install -y iperf3; elif [ -f /usr/bin/yum ]; then yum install -y epel-release && yum install -y iperf3; fi
             echo -e "${GREEN}安装完成！${NC}服务端运行: ${RED}iperf3 -s${NC}"
             read -p "按回车继续..." ;;
-        6)
-            read -p "设置密码 (默认 $DEFAULT_PASS): " dd_pass
+        6 | 7)
+            ver="11" && [[ "$choice" == "7" ]] && ver="12"
+            read -p "设置 Debian $ver 密码 (默认 $DEFAULT_PASS): " dd_pass
             dd_pass=${dd_pass:-$DEFAULT_PASS}
-            bash <(wget --no-check-certificate -qO- 'https://www.moeelf.com/attachment/LinuxShell/InstallNET.sh') -d 11 -v 64 -a -p "$dd_pass"
+            echo -e "${RED}确认：Debian $ver | 密码 $dd_pass${NC}"
+            sleep 10
+            bash <(wget --no-check-certificate -qO- 'https://www.moeelf.com/attachment/LinuxShell/InstallNET.sh') -d "$ver" -v 64 -a -p "$dd_pass"
             ;;
-        7)
+        8)
             get_network_info
-            read -p "设置密码 (默认 $DEFAULT_PASS): " win_pass
+            read -p "设置 Win10 密码 (默认 $DEFAULT_PASS): " win_pass
             win_pass=${win_pass:-$DEFAULT_PASS}
             wget -qO- inst.sh | bash -s - -n $LOCAL_IP,$LOCAL_MASK,$LOCAL_GATEWAY -p "$win_pass" -t https://dl.lamp.sh/vhd/zh-cn_windows10_ltsc.xz
             ;;
-        8)
-            read -p "设置 Win10 密码 (回车默认: $DEFAULT_PASS): " v_pass
+        9)
+            read -p "设置 Win10 密码 (默认 $DEFAULT_PASS): " v_pass
             v_pass=${v_pass:-$DEFAULT_PASS}
-            read -p "设置 RDP 端口 (回车默认: 3389): " v_port
+            read -p "设置 RDP 端口 (默认 3389): " v_port
             v_port=${v_port:-3389}
             wget -N --no-check-certificate https://raw.githubusercontent.com/veip007/dd/master/InstallNET.sh && chmod +x InstallNET.sh && ./InstallNET.sh -d 10 -v 64 -p "$v_pass" -port "$v_port"
             ;;
-        9 | 10)
+        10 | 11)
             check_installed "bt" "aaPanel 面板" "bt" || { read -p "按回车继续..."; continue; }
-            if [[ $choice == 9 ]]; then
+            if [[ $choice == 10 ]]; then
                 wget https://raw.githubusercontent.com/AaronYES/aaPanel/main/script/aapanel.sh -O aapanel.sh && chmod +x aapanel.sh && ./aapanel.sh
             else
                 URL=https://www.aapanel.com/script/install_panel_en.sh
@@ -162,9 +165,9 @@ while true; do
                 bash install_panel_en.sh ipssl
             fi
             show_mini_header ;;
-        11) check_installed "docker" "Docker" "docker ps" || { read -p "按回车继续..."; continue; }; check_docker; read -p "按回车继续..." ;;
-        12) check_installed "realm" "Realm" "./realm.sh" || { read -p "按回车继续..."; continue; }; wget https://raw.githubusercontent.com/jinqians/realm/refs/heads/main/realm.sh && chmod +x realm.sh && ./realm.sh ;;
-        13)
+        12) check_installed "docker" "Docker" "docker ps" || { read -p "按回车继续..."; continue; }; check_docker; read -p "按回车继续..." ;;
+        13) check_installed "realm" "Realm" "./realm.sh" || { read -p "按回车继续..."; continue; }; wget https://raw.githubusercontent.com/jinqians/realm/refs/heads/main/realm.sh && chmod +x realm.sh && ./realm.sh ;;
+        14)
             if docker ps -a --format '{{.Names}}' | grep -q "^status$"; then
                 read -p "探针容器已存在，是否重装？(y/n): " re_status
                 [[ $re_status != [yY] ]] && continue
@@ -177,19 +180,19 @@ while true; do
             docker run -d --restart=always --name=status -v ~/serverstatus-config.json:/ServerStatus/server/config.json -v ~/serverstatus-monthtraffic:/usr/share/nginx/html/json -p ${BIND_IP}:${s_port}:80 -p 35601:35601 cppla/serverstatus:1.1.5
             echo -e "${GREEN}探针安装完成！反代目标: http://127.0.0.1:${s_port}${NC}"
             read -p "按回车继续..." ;;
-        14)
+        15)
             check_installed "xray" "Xray" "xray" || { read -p "按回车继续..."; continue; }
             bash <(wget -qO- -o- https://github.com/233boy/Xray/raw/main/install.sh)
             show_mini_header ;;
-        15)
+        16)
             check_installed "sb" "sing-box" "sb" || { read -p "按回车继续..."; continue; }
             bash <(wget -qO- -o- https://github.com/233boy/sing-box/raw/main/install.sh)
             show_mini_header ;;
-        16)
+        17)
             check_installed "XrayR" "XrayR 官方" "XrayR" || { read -p "按回车继续..."; continue; }
             bash <(curl -Ls https://raw.githubusercontent.com/XrayR-project/XrayR-release/master/install.sh)
             show_mini_header ;;
-        17)
+        18)
             check_installed "xrayr" "XrayR 柚子" "xrayr" || { read -p "按回车继续..."; continue; }
             wget -N https://raw.githubusercontent.com/youzi3/XrayR-script/main/install.sh && bash install.sh
             show_mini_header ;;
