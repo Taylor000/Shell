@@ -33,6 +33,30 @@ get_network_info() {
     LOCAL_MASK="255.255.255.0"
 }
 
+# 开启 BBR 逻辑 (优化版)
+enable_bbr() {
+    echo -e "${YELLOW}正在检测并尝试开启 BBR...${NC}"
+    # 检查内核版本是否大于 4.9
+    kernel_version=$(uname -r | cut -d- -f1)
+    if [[ $(echo "$kernel_version >= 4.9" | bc -l) -eq 1 ]]; then
+        echo -e "${GREEN}检测到内核版本 $kernel_version，支持直接开启 BBR。${NC}"
+        sed -i '/net.core.default_qdisc/d' /etc/sysctl.conf
+        sed -i '/net.ipv4.tcp_congestion_control/d' /etc/sysctl.conf
+        echo "net.core.default_qdisc=fq" >> /etc/sysctl.conf
+        echo "net.ipv4.tcp_congestion_control=bbr" >> /etc/sysctl.conf
+        sysctl -p
+        if sysctl net.ipv4.tcp_congestion_control | grep -q bbr; then
+            echo -e "${GREEN}BBR 开启成功！${NC}"
+        else
+            echo -e "${RED}官方方式开启失败，尝试下载秋水逸冰脚本...${NC}"
+            wget --no-check-certificate -O bbr.sh https://github.com/teddysun/across/raw/master/bbr.sh && chmod +x bbr.sh && ./bbr.sh
+        fi
+    else
+        echo -e "${YELLOW}内核版本过低，正在尝试通过脚本升级内核并安装 BBR...${NC}"
+        wget --no-check-certificate -O bbr.sh https://github.com/teddysun/across/raw/master/bbr.sh && chmod +x bbr.sh && ./bbr.sh
+    fi
+}
+
 # 检查并自动安装 Docker
 check_docker() {
     if ! command -v docker &> /dev/null; then
@@ -55,7 +79,7 @@ check_installed() {
     return 0
 }
 
-# 精简页眉显示 (用于安装完成后保持视野)
+# 精简页眉显示
 show_mini_header() {
     echo -e "\n${BLUE}==================================================${NC}"
     echo -e "${GREEN}             ${SCRIPT_NAME}                  ${NC}"
@@ -80,10 +104,10 @@ show_menu() {
     echo -e "${YELLOW} 1.${NC} 显示系统基本信息与性能测试"
     echo -e "${YELLOW} 2.${NC} 修改系统 root 密码"
     echo -e "${YELLOW} 3.${NC} 修改 SSH 服务端口"
-    echo -e "${YELLOW} 4.${NC} 安装 BBR 加速插件 (秋水逸冰)"
+    echo -e "${YELLOW} 4.${NC} 安装 BBR 加速插件"
     echo -e "${YELLOW} 5.${NC} 安装 iperf3 网络测速工具"
-    echo -e "${YELLOW} 6.${NC} 安装 Debian 11 系统 (萌咖)"
-    echo -e "${YELLOW} 7.${NC} 安装 Debian 12 系统 (萌咖)"
+    echo -e "${YELLOW} 6.${NC} 安装 Debian 11 系统 (萌咖版)"
+    echo -e "${YELLOW} 7.${NC} 安装 Debian 12 系统 (萌咖版)"
     echo -e "${YELLOW} 8.${NC} 安装 Win10 LTSC 系统 (秋水逸冰)"
     echo -e "${YELLOW} 9.${NC} 安装 Win10 系统 (veip007)"
     echo -e "${YELLOW} 10.${NC} 安装 aaPanel 面板 (AaronYES开心版)"
@@ -91,8 +115,8 @@ show_menu() {
     echo -e "${YELLOW} 12.${NC} 安装 Docker 运行环境"
     echo -e "${YELLOW} 13.${NC} 安装 Realm 端口转发工具"
     echo -e "${YELLOW} 14.${NC} 安装 ServerStatus 监控探针"
-    echo -e "${YELLOW} 15.${NC} 安装 Xray 代理服务 (233boy)"
-    echo -e "${YELLOW} 16.${NC} 安装 sing-box 代理服务 (233boy)"
+    echo -e "${YELLOW} 15.${NC} 安装 Xray 代理服务 (233boy版)"
+    echo -e "${YELLOW} 16.${NC} 安装 sing-box 代理服务 (233boy版)"
     echo -e "${YELLOW} 17.${NC} 安装 XrayR 后端对接 (官方正式版)"
     echo -e "${YELLOW} 18.${NC} 安装 XrayR 后端对接 (柚子备份版)"
     echo -e "${BLUE}--------------------------------------------------${NC}"
@@ -128,7 +152,7 @@ while true; do
                 echo -e "${GREEN}端口已成功修改。${NC}"
             fi
             read -p "按回车继续..." ;;
-        4) bash <(curl -Lso- https://github.com/teddysun/across/raw/master/bbr.sh) ;;
+        4) enable_bbr; read -p "按回车继续..." ;;
         5)
             check_installed "iperf3" "iperf3 测速工具" "iperf3" || { read -p "按回车继续..."; continue; }
             if [ -f /usr/bin/apt ]; then apt update && apt install -y iperf3; elif [ -f /usr/bin/yum ]; then yum install -y epel-release && yum install -y iperf3; fi
@@ -138,8 +162,6 @@ while true; do
             ver="11" && [[ "$choice" == "7" ]] && ver="12"
             read -p "设置 Debian $ver 密码 (默认 $DEFAULT_PASS): " dd_pass
             dd_pass=${dd_pass:-$DEFAULT_PASS}
-            echo -e "${RED}确认：Debian $ver | 密码 $dd_pass${NC}"
-            sleep 10
             bash <(wget --no-check-certificate -qO- 'https://www.moeelf.com/attachment/LinuxShell/InstallNET.sh') -d "$ver" -v 64 -a -p "$dd_pass"
             ;;
         8)
