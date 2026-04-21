@@ -82,7 +82,7 @@ show_menu() {
     echo -e "${YELLOW} 3.${NC} 修改 SSH 服务端口"
     echo -e "${YELLOW} 4.${NC} 安装 BBR 加速插件 (秋水逸冰)"
     echo -e "${YELLOW} 5.${NC} 安装 iperf3 网络测速工具"
-    echo -e "${YELLOW} 6.${NC} 安装 Debian 11 系统"
+    echo -e "${YELLOW} 6.${NC} 安装 Debian 11 系统（萌咖）"
     echo -e "${YELLOW} 7.${NC} 安装 Win10 LTSC 系统 (秋水逸冰)"
     echo -e "${YELLOW} 8.${NC} 安装 Win10 系统 (veip007)"
     echo -e "${YELLOW} 9.${NC} 安装 aaPanel 面板 (AaronYES开心版)"
