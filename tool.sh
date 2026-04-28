@@ -12,7 +12,7 @@ NC='\033[0m'
 
 # 作者与脚本信息
 AUTHOR_GITHUB="https://github.com/Taylor000"
-SCRIPT_NAME="一个人的脚本百宝箱"
+SCRIPT_NAME="一个脚本百宝箱"
 SHORTCUT_CMD="tool"
 
 # 默认全局配置
@@ -33,10 +33,9 @@ get_network_info() {
     LOCAL_MASK="255.255.255.0"
 }
 
-# 开启 BBR 逻辑 (优化版)
+# 开启 BBR 逻辑
 enable_bbr() {
     echo -e "${YELLOW}正在检测并尝试开启 BBR...${NC}"
-    # 检查内核版本是否大于 4.9
     kernel_version=$(uname -r | cut -d- -f1)
     if [[ $(echo "$kernel_version >= 4.9" | bc -l) -eq 1 ]]; then
         echo -e "${GREEN}检测到内核版本 $kernel_version，支持直接开启 BBR。${NC}"
@@ -48,7 +47,7 @@ enable_bbr() {
         if sysctl net.ipv4.tcp_congestion_control | grep -q bbr; then
             echo -e "${GREEN}BBR 开启成功！${NC}"
         else
-            echo -e "${RED}官方方式开启失败，尝试下载秋水逸冰脚本...${NC}"
+            echo -e "${RED}官方方式开启失败，尝试下载脚本...${NC}"
             wget --no-check-certificate -O bbr.sh https://github.com/teddysun/across/raw/master/bbr.sh && chmod +x bbr.sh && ./bbr.sh
         fi
     else
@@ -120,6 +119,7 @@ show_menu() {
     echo -e "${YELLOW} 17.${NC} 安装 XrayR 后端对接 (官方正式版)"
     echo -e "${YELLOW} 18.${NC} 安装 XrayR 后端对接 (柚子备份版)"
     echo -e "${BLUE}--------------------------------------------------${NC}"
+    echo -e "${YELLOW} 19.${NC} ${RED}卸载并删除本脚本${NC}"
     echo -e "${RED} 0.${NC} 退出脚本 (或双击回车)${NC}"
     echo -e "${BLUE}==================================================${NC}"
 }
@@ -188,7 +188,10 @@ while true; do
             fi
             show_mini_header ;;
         12) check_installed "docker" "Docker" "docker ps" || { read -p "按回车继续..."; continue; }; check_docker; read -p "按回车继续..." ;;
-        13) check_installed "realm" "Realm" "./realm.sh" || { read -p "按回车继续..."; continue; }; wget https://raw.githubusercontent.com/jinqians/realm/refs/heads/main/realm.sh && chmod +x realm.sh && ./realm.sh ;;
+        13)
+            check_installed "realm" "Realm" "realm" || { read -p "按回车继续..."; continue; }
+            curl -L https://raw.githubusercontent.com/wcwq98/realm/refs/heads/main/realm.sh -o realm.sh && chmod +x realm.sh && ./realm.sh
+            ;;
         14)
             if docker ps -a --format '{{.Names}}' | grep -q "^status$"; then
                 read -p "探针容器已存在，是否重装？(y/n): " re_status
@@ -218,6 +221,16 @@ while true; do
             check_installed "xrayr" "XrayR 柚子" "xrayr" || { read -p "按回车继续..."; continue; }
             wget -N https://raw.githubusercontent.com/youzi3/XrayR-script/main/install.sh && bash install.sh
             show_mini_header ;;
+        19)
+            read -p "确定要删除本脚本及快捷命令吗？(y/n): " del_confirm
+            if [[ $del_confirm == [yY] ]]; then
+                rm -f /usr/local/bin/${SHORTCUT_CMD}
+                echo -e "${GREEN}快捷命令已删除。${NC}"
+                rm -f "$0"
+                echo -e "${GREEN}脚本文件已删除。再见！${NC}"
+                exit 0
+            fi
+            ;;
         0) exit 0 ;;
         *) echo -e "${RED}选择无效。${NC}"; sleep 1 ;;
     esac
