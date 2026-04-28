@@ -12,7 +12,7 @@ NC='\033[0m'
 
 # 作者与脚本信息
 AUTHOR_GITHUB="https://github.com/Taylor000"
-SCRIPT_NAME="一个脚本百宝箱"
+SCRIPT_NAME="一个人的脚本百宝箱"
 SHORTCUT_CMD="tool"
 
 # 默认全局配置
@@ -25,6 +25,21 @@ BIND_IP="127.0.0.1"
 
 # 空输入计数器
 empty_count=0
+
+# 基础依赖检测与安装 (增加 curl 检测)
+check_base_dependencies() {
+    if ! command -v curl &> /dev/null; then
+        echo -e "${YELLOW}检测到系统未安装 curl，正在尝试自动安装...${NC}"
+        if [ -f /usr/bin/apt ]; then
+            apt update && apt install -y curl
+        elif [ -f /usr/bin/yum ]; then
+            yum install -y curl
+        else
+            echo -e "${RED}无法识别的包管理器，请手动安装 curl 后重试！${NC}"
+            exit 1
+        fi
+    fi
+}
 
 # 获取系统基本网络信息
 get_network_info() {
@@ -124,6 +139,9 @@ show_menu() {
     echo -e "${BLUE}==================================================${NC}"
 }
 
+# 脚本运行初始化
+check_base_dependencies
+
 while true; do
     show_menu
     read -p "请输入对应数字进行操作: " choice
@@ -190,6 +208,8 @@ while true; do
         12) check_installed "docker" "Docker" "docker ps" || { read -p "按回车继续..."; continue; }; check_docker; read -p "按回车继续..." ;;
         13)
             check_installed "realm" "Realm" "realm" || { read -p "按回车继续..."; continue; }
+            # 确保 curl 存在 (冗余检测，确保万无一失)
+            command -v curl &> /dev/null || (apt update && apt install -y curl || yum install -y curl)
             curl -L https://raw.githubusercontent.com/wcwq98/realm/refs/heads/main/realm.sh -o realm.sh && chmod +x realm.sh && ./realm.sh
             ;;
         14)
